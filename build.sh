@@ -128,6 +128,8 @@ build_prepare() {
     msg_info 'Patching source code'
     sed -ie 's/\(add_library(\S\+\) SHARED /\1 STATIC /g' "$startdir/build/RFNL/src/CMakeLists.txt"
     sed -ie 's/\(add_library(\S\+\) SHARED /\1 STATIC /g' "$startdir/build/CVEDSP2/src/CMakeLists.txt"
+    sed -ie 's/\(add_library(\S\+\) SHARED /\1 STATIC /g' "$startdir/build/CVESVP/src/CMakeLists.txt"
+    sed -ie 's/\(add_library(\S\+\) SHARED /\1 STATIC /g' "$startdir/build/RUCE/src/CMakeLists.txt"
 
     cd "$startdir"
 }
@@ -170,20 +172,25 @@ EOM
     make install
     cd "$startdir/lib/usr/lib"
     mv libRFNL.a libRFNL.fa
-    ar crT libRFNL.a libRFNL.fa libRUtil2.a
-    ar s libRFNL.a
+    "$AR" crsT libRFNL.a libRFNL.fa libRUtil2.a
 
     msg_info 'Building CVEDSP2'
     cd "$startdir/build/CVEDSP2"
     cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
-    make VERBOSE=1
+    make
     make install
+    cd "$startdir/lib/usr/lib"
+    mv libCVEDSP2.a libCVEDSP2.fa
+    "$AR" crsT libCVEDSP2.a libCVEDSP2.fa libRFNL.fa libRUtil2.a
 
     msg_info 'Building CVESVP'
     cd "$startdir/build/CVESVP"
     cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
-    make
+    make VERBOSE=1
     make install
+    cd "$startdir/lib/usr/lib"
+    mv libCVESVP.a libCVESVP.fa
+    "$AR" crsT libCVESVP.a libCVESVP.fa libCVEDSP2.fa libRFNL.fa libRUtil2.a
 
     msg_info 'Building RUCE'
     cd "$startdir/build/RUCE"
