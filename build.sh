@@ -51,6 +51,21 @@ build_fetch() {
         git clone --mirror --branch master --depth 1 --single-branch --progress https://github.com/Rocaloid/RUCE.git "$startdir/src/RUCE"
     fi
 
+    if [ -e "$startdir/src/RUtil2" ]
+    then
+        if [ "$BUILD_NO_UPDATE" == "1" ]
+        then
+            msg_warn 'Not updating RUtil2 since $BUILD_NO_UPDATE=1'
+        else
+            msg_info 'git fetch RUtil2'
+            cd "$startdir/src/RUtil2"
+            git fetch --prune --progress origin master || msg_warn 'Failed to update RUtil2. You may be building an old version.'
+        fi
+    else
+        msg_info 'git clone RUtil2'
+        git clone --mirror --branch master --depth 1 --single-branch --progress https://github.com/Rocaloid/RUtil2.git "$startdir/src/RUtil2"
+    fi
+
     cd "$startdir"
 }
 build_prepare() {
