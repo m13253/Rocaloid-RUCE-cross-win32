@@ -66,6 +66,51 @@ build_fetch() {
         git clone --mirror --branch master --depth 1 --single-branch --progress https://github.com/Rocaloid/RUtil2.git "$startdir/src/RUtil2"
     fi
 
+    if [ -e "$startdir/src/CVESVP" ]
+    then
+        if [ "$BUILD_NO_UPDATE" == "1" ]
+        then
+            msg_warn 'Not updating CVESVP since $BUILD_NO_UPDATE=1'
+        else
+            msg_info 'git fetch CVESVP'
+            cd "$startdir/src/CVESVP"
+            git fetch --prune --progress origin master || msg_warn 'Failed to update CVESVP. You may be building an old version.'
+        fi
+    else
+        msg_info 'git clone CVESVP'
+        git clone --mirror --branch master --depth 1 --single-branch --progress https://github.com/Rocaloid/CVESVP.git "$startdir/src/CVESVP"
+    fi
+
+    if [ -e "$startdir/src/CVEDSP2" ]
+    then
+        if [ "$BUILD_NO_UPDATE" == "1" ]
+        then
+            msg_warn 'Not updating CVEDSP2 since $BUILD_NO_UPDATE=1'
+        else
+            msg_info 'git fetch CVEDSP2'
+            cd "$startdir/src/CVEDSP2"
+            git fetch --prune --progress origin master || msg_warn 'Failed to update CVEDSP2. You may be building an old version.'
+        fi
+    else
+        msg_info 'git clone CVEDSP2'
+        git clone --mirror --branch master --depth 1 --single-branch --progress https://github.com/Rocaloid/CVEDSP2.git "$startdir/src/CVEDSP2"
+    fi
+
+    if [ -e "$startdir/src/RFNL" ]
+    then
+        if [ "$BUILD_NO_UPDATE" == "1" ]
+        then
+            msg_warn 'Not updating RFNL since $BUILD_NO_UPDATE=1'
+        else
+            msg_info 'git fetch RFNL'
+            cd "$startdir/src/RFNL"
+            git fetch --prune --progress origin master || msg_warn 'Failed to update RFNL. You may be building an old version.'
+        fi
+    else
+        msg_info 'git clone RFNL'
+        git clone --mirror --branch master --depth 1 --single-branch --progress https://github.com/Rocaloid/RFNL.git "$startdir/src/RFNL"
+    fi
+
     cd "$startdir"
 }
 build_prepare() {
@@ -76,6 +121,13 @@ build_prepare() {
     mkdir -p "$startdir/build"
     git clone "$startdir/src/RUCE" "$startdir/build/RUCE"
     git clone "$startdir/src/RUtil2" "$startdir/build/RUtil2"
+    git clone "$startdir/src/CVESVP" "$startdir/build/CVESVP"
+    git clone "$startdir/src/CVEDSP2" "$startdir/build/CVEDSP2"
+    git clone "$startdir/src/RFNL" "$startdir/build/RFNL"
+
+    msg_info 'Patching source code'
+    sed -ie 's/\(add_library(\S\+\) SHARED /\1 STATIC /g' "$startdir/build/RFNL/src/CMakeLists.txt"
+    sed -ie 's/\(add_library(\S\+\) SHARED /\1 STATIC /g' "$startdir/build/CVEDSP2/src/CMakeLists.txt"
 
     cd "$startdir"
 }
@@ -93,7 +145,51 @@ build_compile() {
     export MAKEFLAGS="-j$(nproc || echo 1) $MAKEFLAGS"
     export PKG_CONFIG_PATH="$startdir/lib/usr/lib/pkgconfig"
 
+    cat >"$startdir/build/toolchain.cmake" <<EOM
+SET(CMAKE_SYSTEM_NAME Windows)
+SET(CMAKE_SYSTEM_PROCESSOR $HOSTARCH)
+SET(CMAKE_C_COMPILER $HOSTARCH-gcc)
+SET(CMAKE_CXX_COMPILER $HOSTARCH-g++)
+SET(CMAKE_RC_COMPILER $HOSTARCH-windres)
+SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
+EOM
+
     msg_info 'Building RUtil2'
+    cd "$startdir/build/RUtil2"
+    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
+    make
+    make install
+
+    msg_info 'Building RFNL'
+    cd "$startdir/build/RFNL"
+    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
+    make
+    make install
+    cd "$startdir/lib/usr/lib"
+    mv libRFNL.a libRFNL.fa
+    ar crT libRFNL.a libRFNL.fa libRUtil2.a
+    ar s libRFNL.a
+
+    msg_info 'Building CVEDSP2'
+    cd "$startdir/build/CVEDSP2"
+    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
+    make VERBOSE=1
+    make install
+
+    msg_info 'Building CVESVP'
+    cd "$startdir/build/CVESVP"
+    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
+    make
+    make install
+
+    msg_info 'Building RUCE'
+    cd "$startdir/build/RUCE"
+    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
+    make
+    make install
 }
 main() {
     build_envcheck
