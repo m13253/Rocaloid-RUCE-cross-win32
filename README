@@ -1,0 +1,10 @@
+Cross compile script to win32 for Rocaloid-RUCE
+===============================================
+
+Before building, please install MinGW-w64 cross compile toolchain.
+For example, on ArchLinux, `sudo pacman -S mingw-w64-toolchain`
+
+Then run `./build.sh` and wait.
+
+If anything goes wrong after trying twice,
+please submit an issue attaching build.log.
