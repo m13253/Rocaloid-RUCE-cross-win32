@@ -205,6 +205,7 @@ EOM
     msg_info 'Compressing RUCE'
     cd "$startdir"
     "$HOSTARCH-strip" -s "$startdir/lib/usr/bin/RUCE_CLI.exe"
+    rm -f "$startdir/RUCE_CLI.exe"
     if upx --best -o"$startdir/RUCE_CLI.exe" "$startdir/lib/usr/bin/RUCE_CLI.exe"
     then
         chmod 755 "$startdir/RUCE_CLI.exe" || true
@@ -213,6 +214,7 @@ EOM
         install -Dm0755 "$startdir/lib/usr/bin/RUCE_CLI.exe" "$startdir/RUCE_CLI.exe"
     fi
     "$HOSTARCH-strip" --strip-debug --strip-unneeded "$startdir/lib/usr/lib/libRUCE.dll"
+    rm -f "$startdir/libRUCE.dll"
     if upx --best -o"$startdir/libRUCE.dll" "$startdir/lib/usr/lib/libRUCE.dll"
     then
         chmod 755 "$startdir/libRUCE.dll" || true
