@@ -222,6 +222,9 @@ EOM
         msg_warn 'Failed to compress library with UPX'
         install -Dm0755 "$startdir/lib/usr/lib/libRUCE.dll" "$startdir/libRUCE.dll"
     fi
+
+    msg_info 'Successfully built'
+    cd "$startdir"
 }
 main() {
     build_envcheck
