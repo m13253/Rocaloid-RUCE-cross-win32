@@ -197,6 +197,29 @@ EOM
     cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
     make
     make install
+    cd "$startdir/lib/usr/lib"
+    mv libRUCE.a libRUCE.fa
+    "$AR" crsT libRUCE.a libRUCE.fa libCVESVP.fa libCVEDSP2.fa libRFNL.fa libRUtil2.a
+    "$CC" -shared -o libRUCE.dll -static-libgcc -Wl,--whole-archive libRUCE.a -Wl,--no-whole-archive
+
+    msg_info 'Compressing RUCE'
+    cd "$startdir"
+    "$HOSTARCH-strip" -s "$startdir/lib/usr/bin/RUCE_CLI.exe"
+    if upx --best -o"$startdir/RUCE_CLI.exe" "$startdir/lib/usr/bin/RUCE_CLI.exe"
+    then
+        chmod 755 "$startdir/RUCE_CLI.exe" || true
+    else
+        msg_warn 'Failed to compress executable with UPX'
+        install -Dm0755 "$startdir/lib/usr/bin/RUCE_CLI.exe" "$startdir/RUCE_CLI.exe"
+    fi
+    "$HOSTARCH-strip" --strip-debug --strip-unneeded "$startdir/lib/usr/lib/libRUCE.dll"
+    if upx --best -o"$startdir/libRUCE.dll" "$startdir/lib/usr/lib/libRUCE.dll"
+    then
+        chmod 755 "$startdir/libRUCE.dll" || true
+    else
+        msg_warn 'Failed to compress library with UPX'
+        install -Dm0755 "$startdir/lib/usr/lib/libRUCE.dll" "$startdir/libRUCE.dll"
+    fi
 }
 main() {
     build_envcheck
