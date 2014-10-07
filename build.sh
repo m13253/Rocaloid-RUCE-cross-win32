@@ -126,6 +126,7 @@ build_prepare() {
     git clone "$startdir/src/RFNL" "$startdir/build/RFNL"
 
     msg_info 'Patching source code'
+    sed -ie 's/\(add_library(\S\+\) SHARED /\1 STATIC /g' "$startdir/build/RUtil2/src/CMakeLists.txt"
     sed -ie 's/\(add_library(\S\+\) SHARED /\1 STATIC /g' "$startdir/build/RFNL/src/CMakeLists.txt"
     sed -ie 's/\(add_library(\S\+\) SHARED /\1 STATIC /g' "$startdir/build/CVEDSP2/src/CMakeLists.txt"
     sed -ie 's/\(add_library(\S\+\) SHARED /\1 STATIC /g' "$startdir/build/CVESVP/src/CMakeLists.txt"
