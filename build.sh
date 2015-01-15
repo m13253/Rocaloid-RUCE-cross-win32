@@ -162,13 +162,17 @@ EOM
 
     msg_info 'Building RUtil2'
     cd "$startdir/build/RUtil2"
-    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" ..
     make
     make install
 
     msg_info 'Building RFNL'
     cd "$startdir/build/RFNL"
-    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" ..
     make
     make install
     cd "$startdir/lib/usr/lib"
@@ -177,7 +181,9 @@ EOM
 
     msg_info 'Building CVEDSP2'
     cd "$startdir/build/CVEDSP2"
-    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" ..
     make
     make install
     cd "$startdir/lib/usr/lib"
@@ -186,7 +192,9 @@ EOM
 
     msg_info 'Building CVESVP'
     cd "$startdir/build/CVESVP"
-    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" ..
     make VERBOSE=1
     make install
     cd "$startdir/lib/usr/lib"
@@ -195,7 +203,9 @@ EOM
 
     msg_info 'Building RUCE'
     cd "$startdir/build/RUCE"
-    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" .
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" ..
     make
     make install
     cd "$startdir/lib/usr/lib"
