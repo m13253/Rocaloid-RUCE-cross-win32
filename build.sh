@@ -195,7 +195,7 @@ EOM
     mkdir build
     cd build
     cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE="$startdir/build/toolchain.cmake" -DCMAKE_INSTALL_PREFIX="$startdir/lib/usr" ..
-    make VERBOSE=1
+    make
     make install
     cd "$startdir/lib/usr/lib"
     mv libCVESVP.a libCVESVP.fa
