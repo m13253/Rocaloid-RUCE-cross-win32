@@ -44,11 +44,11 @@ build_fetch() {
         else
             msg_info 'git fetch RUCE'
             cd "$startdir/src/RUCE"
-            git fetch --prune --progress origin master || msg_warn 'Failed to update RUCE. You may be building an old version.'
+            git fetch --prune --progress origin experimental || msg_warn 'Failed to update RUCE. You may be building an old version.'
         fi
     else
         msg_info 'git clone RUCE'
-        git clone --mirror --branch master --depth 1 --single-branch --progress https://github.com/Rocaloid/RUCE.git "$startdir/src/RUCE"
+        git clone --mirror --branch experimental --depth 1 --single-branch --progress https://github.com/Rocaloid/RUCE.git "$startdir/src/RUCE"
     fi
 
     if [ -e "$startdir/src/RUtil2" ]
