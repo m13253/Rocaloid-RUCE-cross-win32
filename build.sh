@@ -125,6 +125,12 @@ build_prepare() {
     git clone "$startdir/src/CVEDSP2" "$startdir/build/CVEDSP2"
     git clone "$startdir/src/RFNL" "$startdir/build/RFNL"
 
+    git -C "$startdir/build/RUCE" checkout -q fd4dafa33097e161fa2b751b5d4c9499d6881c45
+    git -C "$startdir/build/RUtil2" checkout -q 5e06bb4ef979e19594eea1e4b3e6275a391e9f35
+    git -C "$startdir/build/CVESVP" checkout -q 4e0f148d760b1f18e11f558f86c5f8171ce4a76a
+    git -C "$startdir/build/CVEDSP2" checkout -q 8a830cf229e29d3d7897492487eb852456664860
+    git -C "$startdir/build/RFNL" checkout -q 262d7a48c50ca110b86c49751b5f88fde6460eaf
+
     msg_info 'Patching source code'
     sed -i -e 's/\(add_library(\S\+\) SHARED /\1 STATIC /g' "$startdir/build/RUtil2/src/CMakeLists.txt"
     sed -i -e 's/\(add_library(\S\+\) SHARED /\1 STATIC /g' "$startdir/build/RFNL/src/CMakeLists.txt"
